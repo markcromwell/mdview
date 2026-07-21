@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  # Render gate: the real behaviour test — feed non-trivial GFM to renderMarkdown() and assert the
+  # rendered DOM (heading, table, highlighted code, task-list checkbox, link, image, blockquote) plus
+  # XSS-safety. This is what proves the viewer actually renders, not that files merely exist.
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm ci
+      - run: npm test
+
+  # No-CDN gate: the bundle must never reference an external http(s) script/style at runtime.
+  no-cdn:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: assert no runtime CDN references
+        run: |
+          if grep -REn '(src|href)="https?://' index.html render.js app.js; then
+            echo "FAIL: external CDN reference found in the runtime bundle"; exit 1
+          fi
+          echo "no-cdn gate: OK"

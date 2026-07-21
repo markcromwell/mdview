@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>mdview — markdown viewer</title>
+  <!-- All assets are vendored locally. No runtime CDN. CSP-friendly:
+       connect/img may be needed for pasted images; scripts + styles are 'self' only. -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; script-src 'self'; style-src 'self'; img-src * data:; font-src 'self' data:; base-uri 'none'; form-action 'none'">
+  <link id="md-theme" rel="stylesheet" href="assets/github-markdown-light.css">
+  <link id="hl-theme" rel="stylesheet" href="assets/hljs-github.css">
+  <link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+  <header class="toolbar">
+    <span class="brand"><span class="logo">M</span> mdview</span>
+    <span class="hint">paste markdown on the left — rendered on the right</span>
+    <span class="spacer"></span>
+    <button id="theme-toggle" class="toggle" type="button" aria-label="Toggle color theme">
+      <span id="theme-icon">☾</span><span id="theme-label">Dark</span>
+    </button>
+  </header>
+
+  <main class="split">
+    <section class="pane editor">
+      <div class="pane-label">Markdown</div>
+      <textarea id="input" spellcheck="false" aria-label="Markdown input"># Welcome to mdview
+
+A tiny, **private** markdown viewer. Everything runs in your browser — nothing is
+uploaded anywhere. Edit this text and watch the preview update live.
+
+## GitHub-Flavored Markdown
+
+- Nested lists
+  - like this one
+  - with sub-items
+- Ordered too:
+  1. first
+  2. second
+
+### Task list
+
+- [x] Render headings, lists, tables
+- [x] Syntax-highlight fenced code
+- [ ] Upload a file (a later version)
+
+### A table
+
+| Language   | Highlighted | Notes            |
+| ---------- | :---------: | ---------------- |
+| JavaScript |     yes     | via highlight.js |
+| Python     |     yes     | common languages |
+| Rust       |     yes     | bundled          |
+
+### Fenced code
+
+```js
+// A greeter, syntax-highlighted client-side.
+function greet(name) {
+  const who = name?.trim() || "world";
+  return `hello, ${who}!`;
+}
+
+console.log(greet("mdview"));
+```
+
+```python
+def fib(n):
+    a, b = 0, 1
+    for _ in range(n):
+        a, b = b, a + b
+    return a
+```
+
+> **Tip:** use the toggle in the top-right to switch between light and dark.
+> The rendered markdown *and* the code theme both follow it.
+
+Links work too — here is [the CommonMark spec](https://commonmark.org), and
+inline `code spans` render as well.
+</textarea>
+    </section>
+
+    <section class="pane">
+      <div class="pane-label">Preview</div>
+      <div class="preview-scroll">
+        <article id="preview" class="markdown-body"></article>
+      </div>
+    </section>
+  </main>
+
+  <script src="vendor/marked.min.js"></script>
+  <script src="vendor/highlight.min.js"></script>
+  <script src="vendor/purify.min.js"></script>
+  <script src="render.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

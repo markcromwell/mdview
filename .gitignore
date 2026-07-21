@@ -1,26 +1,14 @@
+# Node / JS
+node_modules/
+npm-debug.log*
+
+# Build/QA output (regenerate with `npm run samples`)
+# (samples/ is committed as demo output; uncomment to stop tracking it)
+# samples/
+
 # Forge runtime artifacts
 .forge-access.lock
 .forge-worker.lock
-
-# Python
-__pycache__/
-*.py[cod]
-*.egg-info/
-dist/
-build/
-.env
-.venv/
-venv/
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-.coverage
-.coverage.*
-htmlcov/
-
-# Test databases
-*.db
-*.sqlite3
 
 # OS
 .DS_Store

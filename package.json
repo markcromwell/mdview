@@ -1,0 +1,20 @@
+{
+  "name": "mdview",
+  "version": "0.1.0",
+  "description": "Serverless static single-page markdown viewer — paste markdown, get a clean GitHub-flavored render with light/dark theme and syntax highlighting. Zero backend, all client-side.",
+  "license": "MIT",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "test": "node test/render.test.mjs",
+    "samples": "node scripts/build_samples.mjs"
+  },
+  "devDependencies": {
+    "@highlightjs/cdn-assets": "^11.11.1",
+    "dompurify": "^3.4.12",
+    "github-markdown-css": "^5.9.0",
+    "highlight.js": "^11.11.1",
+    "jsdom": "^24.1.3",
+    "marked": "^12.0.2"
+  }
+}

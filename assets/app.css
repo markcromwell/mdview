@@ -1,0 +1,140 @@
+/* app.css — mdview application chrome (the split-pane shell around the rendered markdown).
+   The rendered markdown itself is styled by the vendored github-markdown-*.css; this file
+   styles the toolbar, panes, textarea, and theme toggle, and defines light/dark chrome vars
+   keyed off <html data-theme>. */
+
+:root {
+  --bg: #ffffff;
+  --bg-elev: #f6f8fa;
+  --border: #d0d7de;
+  --text: #1f2328;
+  --muted: #656d76;
+  --accent: #0969da;
+  --shadow: rgba(31, 35, 40, 0.08);
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --bg: #0d1117;
+  --bg-elev: #161b22;
+  --border: #30363d;
+  --text: #e6edf3;
+  --muted: #8b949e;
+  --accent: #2f81f7;
+  --shadow: rgba(0, 0, 0, 0.4);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html, body { height: 100%; margin: 0; }
+
+body {
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+header.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--bg-elev);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 0 var(--shadow);
+  flex: 0 0 auto;
+}
+
+header.toolbar .brand {
+  font-weight: 600;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+header.toolbar .brand .logo {
+  display: inline-flex;
+  width: 22px; height: 22px;
+  align-items: center; justify-content: center;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 5px;
+  font-size: 13px; font-weight: 700;
+}
+
+header.toolbar .spacer { flex: 1 1 auto; }
+
+header.toolbar .hint { color: var(--muted); font-size: 12px; }
+
+button.toggle {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+button.toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+main.split {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 0;
+}
+
+.pane { min-height: 0; display: flex; flex-direction: column; }
+.pane.editor { border-right: 1px solid var(--border); }
+
+.pane .pane-label {
+  padding: 6px 16px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+  background: var(--bg-elev);
+  border-bottom: 1px solid var(--border);
+}
+
+textarea#input {
+  flex: 1 1 auto;
+  width: 100%;
+  resize: none;
+  border: 0;
+  outline: none;
+  padding: 16px;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 13.5px;
+  line-height: 1.6;
+  background: var(--bg);
+  color: var(--text);
+  tab-size: 2;
+}
+
+.preview-scroll {
+  flex: 1 1 auto;
+  overflow: auto;
+  padding: 24px 28px;
+  background: var(--bg);
+}
+
+/* github-markdown-css targets .markdown-body; keep it readable inside our pane. */
+.markdown-body {
+  background: transparent !important;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+@media (max-width: 720px) {
+  main.split { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+  .pane.editor { border-right: 0; border-bottom: 1px solid var(--border); }
+}

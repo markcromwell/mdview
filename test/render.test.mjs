@@ -10,8 +10,13 @@
  * Run:  npm test    (or:  node test/render.test.mjs)     Exit 0 = all pass, non-zero = fail.
  */
 import { createRequire } from "node:module";
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import { JSDOM } from "jsdom";
 const require = createRequire(import.meta.url);
 const { renderMarkdown } = require("../render.js");
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 const SAMPLE = `# Heading One
 
@@ -73,6 +78,16 @@ const xssHtml = renderMarkdown(XSS);
 check("XSS: no <script> tag survives", !/<script/i.test(xssHtml));
 check("XSS: no onerror handler survives", !/onerror/i.test(xssHtml));
 check("XSS: no javascript: URL survives", !/javascript:/i.test(xssHtml));
+
+const browserDom = new JSDOM("<!doctype html>", {
+  runScripts: "outside-only",
+  url: pathToFileURL(path.join(ROOT, "index.html")).href
+});
+for (const file of ["vendor/marked.min.js", "vendor/highlight.min.js", "vendor/purify.min.js", "render.js"]) {
+  browserDom.window.eval(readFileSync(path.join(ROOT, file), "utf8"));
+}
+check("browser bundle defines globalThis.renderMarkdown", typeof browserDom.window.renderMarkdown === "function");
+check("browser renderMarkdown returns sanitized HTML", !/onerror/i.test(browserDom.window.renderMarkdown("<img src=x onerror=alert(1)>")));
 
 console.log("");
 if (failures === 0) {

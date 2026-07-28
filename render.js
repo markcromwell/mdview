@@ -6,8 +6,8 @@
  * Works in BOTH environments so the render is unit-testable headless:
  *   - Browser: loaded as a classic <script> after the vendored marked / highlight.js /
  *              DOMPurify globals; assigns globalThis.renderMarkdown.
- *   - Node:    require()'d by test/render.test.mjs; pulls marked / highlight.js / dompurify
- *              (+ jsdom to give DOMPurify a DOM) from node_modules.
+ *   - Node:    require()'d by test/render.test.mjs; evaluates the same vendored UMD
+ *              builds in jsdom so tests cover the shipped assets.
  *
  * GitHub-Flavored Markdown (tables, task lists, autolinks, strikethrough) + fenced-code
  * syntax highlighting via highlight.js. Output is sanitized with DOMPurify so pasted
@@ -16,12 +16,24 @@
 (function (root, factory) {
   if (typeof module === "object" && typeof module.exports === "object") {
     // ---- Node / CommonJS ----
-    const { Marked } = require("marked");
-    const hljs = require("highlight.js");
-    const createDOMPurify = require("dompurify");
+    const fs = require("fs");
+    const path = require("path");
+    const { pathToFileURL } = require("url");
     const { JSDOM } = require("jsdom");
-    const DOMPurify = createDOMPurify(new JSDOM("").window);
-    module.exports = factory(Marked, hljs, DOMPurify);
+    const dom = new JSDOM("<!doctype html>", {
+      runScripts: "outside-only",
+      url: pathToFileURL(path.join(__dirname, "index.html")).href
+    });
+
+    function loadVendor(file) {
+      dom.window.eval(fs.readFileSync(path.join(__dirname, "vendor", file), "utf8"));
+    }
+
+    loadVendor("marked.min.js");
+    loadVendor("highlight.min.js");
+    loadVendor("purify.min.js");
+
+    module.exports = factory(dom.window.marked.Marked, dom.window.hljs, dom.window.DOMPurify);
   } else {
     // ---- Browser ----
     const api = factory(root.marked.Marked, root.hljs, root.DOMPurify);

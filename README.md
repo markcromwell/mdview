@@ -9,8 +9,8 @@ fenced-code syntax highlighting. Everything runs in your browser; nothing is upl
 
 It's a static file — no build, no server:
 
-- Open `index.html` directly in a browser (`file://`), **or**
-- serve the folder: `python -m http.server` then visit `http://localhost:8000/`.
+- Open `index.html` directly in a browser (`file://`).
+- The page loads only local files from this repository.
 
 ## What it does (MVP-1)
 
@@ -32,8 +32,6 @@ app.js                     browser bootstrap (wires textarea/preview/toggle; no 
 vendor/                    marked.min.js, highlight.min.js, purify.min.js  (vendored, CDN-free)
 assets/                    github-markdown-{light,dark}.css, hljs-github{,-dark}.css, app.css
 test/render.test.mjs       real render test (asserts the rendered DOM, not just file-exists)
-scripts/build_samples.mjs  renders demo docs to samples/*.html (QA aid)
-samples/                   two rendered demos (README-scale + code-heavy) for eyeballing
 ```
 
 ## Test
@@ -44,11 +42,12 @@ DOM (an `<h1>`, a real `<table>`, a highlighted `<pre><code class="hljs">`, a ta
 / `onerror` / `javascript:`).
 
 ```
-npm install      # dev deps for the headless test (marked, highlight.js, dompurify, jsdom)
+npm ci
 npm test         # node test/render.test.mjs
 ```
 
-The browser bundle itself needs **no** install — the libraries are vendored.
+The browser bundle itself needs no install. The Node test uses the committed browser builds and
+`jsdom` only to provide DOMPurify with a DOM.
 
 ## Not in MVP-1 (later)
 

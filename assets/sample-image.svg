@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="180" viewBox="0 0 720 180" role="img" aria-labelledby="title desc">
+  <title id="title">mdview sample image</title>
+  <desc id="desc">A local preview image used by the seeded markdown document.</desc>
+  <rect width="720" height="180" rx="12" fill="#0969da"/>
+  <rect x="28" y="28" width="664" height="124" rx="8" fill="#ffffff" opacity="0.14"/>
+  <path d="M72 120V60h18l18 24 18-24h18v60h-18V86l-18 24-18-24v34H72z" fill="#ffffff"/>
+  <text x="184" y="82" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700">mdview</text>
+  <text x="184" y="120" fill="#dbeafe" font-family="Arial, Helvetica, sans-serif" font-size="22">local image rendered from pasted markdown</text>
+</svg>

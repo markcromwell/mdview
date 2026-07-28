@@ -8,9 +8,9 @@
        connect/img may be needed for pasted images; scripts + styles are 'self' only. -->
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'none'; script-src 'self'; style-src 'self'; img-src * data:; font-src 'self' data:; base-uri 'none'; form-action 'none'">
-  <link id="md-theme" rel="stylesheet" href="assets/github-markdown-light.css">
-  <link id="hl-theme" rel="stylesheet" href="assets/hljs-github.css">
-  <link rel="stylesheet" href="assets/app.css">
+  <link id="md-theme" rel="stylesheet" href="./assets/github-markdown-light.css">
+  <link id="hl-theme" rel="stylesheet" href="./assets/hljs-github.css">
+  <link rel="stylesheet" href="./assets/app.css">
 </head>
 <body>
   <header class="toolbar">
@@ -78,6 +78,10 @@ def fib(n):
 
 Links work too — here is [the CommonMark spec](https://commonmark.org), and
 inline `code spans` render as well.
+
+### Image
+
+![A local mdview sample image](./assets/sample-image.svg)
 </textarea>
     </section>
 
@@ -89,10 +93,10 @@ inline `code spans` render as well.
     </section>
   </main>
 
-  <script src="vendor/marked.min.js"></script>
-  <script src="vendor/highlight.min.js"></script>
-  <script src="vendor/purify.min.js"></script>
-  <script src="render.js"></script>
-  <script src="app.js"></script>
+  <script src="./vendor/marked.min.js"></script>
+  <script src="./vendor/highlight.min.js"></script>
+  <script src="./vendor/purify.min.js"></script>
+  <script src="./render.js"></script>
+  <script src="./app.js"></script>
 </body>
 </html>

@@ -6,7 +6,7 @@
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "test": "node test/render.test.mjs",
+    "test": "node scripts/run_unit_tests.mjs",
     "samples": "node scripts/build_samples.mjs"
   },
   "devDependencies": {

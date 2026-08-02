@@ -52,6 +52,8 @@ check("contains zero inline event-handler attributes", eventAttrs.length === 0);
 const inlineScripts = [...document.querySelectorAll("script:not([src])")]
   .filter((script) => script.textContent.trim().length > 0);
 check("contains zero inline script bodies", inlineScripts.length === 0);
+const scriptSrcs = [...document.querySelectorAll("script[src]")].map((script) => script.getAttribute("src"));
+check("loads ./fileio.js before ./app.js", scriptSrcs.indexOf("./fileio.js") >= 0 && scriptSrcs.indexOf("./fileio.js") < scriptSrcs.indexOf("./app.js"));
 check("styles .drop-zone", /\.drop-zone\s*\{/.test(css));
 check("styles .drop-zone.dragover", /\.drop-zone\.dragover\s*\{/.test(css));
 check("styles light error banner", /:root\s+\.error-banner\s*\{/.test(css));

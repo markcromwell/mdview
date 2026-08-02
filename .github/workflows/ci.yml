@@ -16,13 +16,13 @@ jobs:
           node-version: "20"
           cache: npm
       - run: npm ci
-      - run: node test/render.test.mjs
+      - run: npm test
       - name: Reject external runtime script/style refs
         run: |
-          if grep -EIn "<(script|link)[^>]+(src|href)[[:space:]]*=[[:space:]]*[\"']https://" index.html render.js; then
+          if grep -EIn "<(script|link)[^>]+(src|href)[[:space:]]*=[[:space:]]*[\"']https://" index.html render.js app.js fileio.js; then
             echo "External script/style URL found"; exit 1
           fi
-          if grep -EIn "(import[[:space:]]+.*[\"']https://|from[[:space:]]+[\"']https://)" render.js; then
+          if grep -EIn "(import[[:space:]]+.*[\"']https://|from[[:space:]]+[\"']https://)" render.js app.js fileio.js; then
             echo "External module URL found"; exit 1
           fi
       - name: Reject external URLs in vendored runtime assets

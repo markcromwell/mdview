@@ -45,7 +45,17 @@ _No FastAPI routes found._
 ---
 
 ## V. Architectural Decisions [CURATED]
-_No decisions recorded yet._
+
+- ADR-1: All file reads are strictly client-side. Zero network egress during file open is enforced
+  by a HAR-shaped ledger check in `scripts/check_no_egress.mjs`.
+- ADR-2: Markdown file input has a hard 2 MiB cap and oversized files are refused visibly rather
+  than truncated.
+- ADR-3: File content is decoded with strict `TextDecoder("utf-8", { fatal: true })` semantics
+  instead of `FileReader.readAsText`, so invalid byte sequences fail explicitly.
+- ADR-4: File loading allows only one in-flight read and uses generation-token last-write-wins
+  semantics to drop stale completion callbacks.
+- ADR-5: Filenames are sanitized to a basename before any display, document-title, or print-title
+  use.
 
 ---
 

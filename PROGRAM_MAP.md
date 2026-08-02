@@ -1,7 +1,7 @@
 # Program Map: mdview
 
-<!--GENERATED:BEGIN hash=4a667b739ac8fbc5985853bede8f5cd8ca91528657a8558634d869605f4a8218 sig= job=0 commit=df563301ff6a221f99d7f9e2df0e37207a04bc9d-->
-<!--Generated 2026-07-28T13:15:59.067213+00:00. Do not edit — will be overwritten.-->
+<!--GENERATED:BEGIN hash=13d7956f4b9f496f4a4a72299f092dfdd00e57defd9fa77683101b99f67bb5b4 sig= job=0 commit=e72e0c9292413c60b4e4f4deaec3cf4a6c7291f8-->
+<!--Generated 2026-08-02T00:55:39.822615+00:00. Do not edit — will be overwritten.-->
 
 ## II. Canonical Data Schema [GENERATED — do not edit]
 
@@ -21,7 +21,7 @@ assets/github-markdown-light.css
 assets/hljs-github-dark.css
 assets/hljs-github.css
 assets/sample-image.svg
-ci.node.yml.txt
+fileio.js
 index.html
 package-lock.json
 package.json
@@ -29,7 +29,12 @@ render.js
 samples/code-heavy.html
 samples/readme-scale.html
 scripts/build_samples.mjs
-scripts/test_unit.py
+scripts/check_no_egress.mjs
+scripts/run_unit_tests.mjs
+test/app_file_open.test.mjs
+test/fileio.test.mjs
+test/markup.test.mjs
+test/no_egress.test.mjs
 test/render.test.mjs
 vendor/highlight.min.js
 vendor/marked.min.js
@@ -45,7 +50,17 @@ _No FastAPI routes found._
 ---
 
 ## V. Architectural Decisions [CURATED]
-_No decisions recorded yet._
+
+- ADR-1: All file reads are strictly client-side. Zero network egress during file open is enforced
+  by a HAR-shaped ledger check in `scripts/check_no_egress.mjs`.
+- ADR-2: Markdown file input has a hard 2 MiB cap and oversized files are refused visibly rather
+  than truncated.
+- ADR-3: File content is decoded with strict `TextDecoder("utf-8", { fatal: true })` semantics
+  instead of `FileReader.readAsText`, so invalid byte sequences fail explicitly.
+- ADR-4: File loading allows only one in-flight read and uses generation-token last-write-wins
+  semantics to drop stale completion callbacks.
+- ADR-5: Filenames are sanitized to a basename before any display, document-title, or print-title
+  use.
 
 ---
 

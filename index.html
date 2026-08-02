@@ -15,14 +15,19 @@
 <body>
   <header class="toolbar">
     <span class="brand"><span class="logo">M</span> mdview</span>
-    <span class="hint">paste markdown on the left — rendered on the right</span>
+    <span class="hint">paste or open markdown on the left — rendered on the right</span>
     <span class="spacer"></span>
+    <input class="file-input" type="file" id="file-input" accept=".md,.markdown,text/markdown" aria-label="Open markdown file">
+    <label class="file-button" for="file-input">Open .md</label>
     <button id="theme-toggle" class="toggle" type="button" aria-label="Toggle color theme">
       <span id="theme-icon">☾</span><span id="theme-label">Dark</span>
     </button>
   </header>
 
-  <main class="split">
+  <div id="error-banner" class="error-banner" role="alert" aria-live="assertive" hidden></div>
+  <div id="doc-title" class="print-title" aria-hidden="true"></div>
+
+  <main id="drop-zone" class="split drop-zone" aria-label="Markdown file drop zone">
     <section class="pane editor">
       <div class="pane-label">Markdown</div>
       <textarea id="input" spellcheck="false" aria-label="Markdown input"># Welcome to mdview
@@ -88,6 +93,7 @@ inline `code spans` render as well.
     <section class="pane">
       <div class="pane-label">Preview</div>
       <div class="preview-scroll">
+        <div id="preview-message" class="preview-message" hidden></div>
         <article id="preview" class="markdown-body"></article>
       </div>
     </section>
@@ -97,6 +103,7 @@ inline `code spans` render as well.
   <script src="./vendor/highlight.min.js"></script>
   <script src="./vendor/purify.min.js"></script>
   <script src="./render.js"></script>
+  <script src="./fileio.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>

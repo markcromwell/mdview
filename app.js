@@ -17,6 +17,12 @@
   var hlTheme = document.getElementById("hl-theme");
   var toggleLabel = document.getElementById("theme-label");
   var toggleIcon = document.getElementById("theme-icon");
+  var fileInput = document.getElementById("file-input");
+  var dropZone = document.getElementById("drop-zone");
+  var errorBanner = document.getElementById("error-banner");
+  var previewMessage = document.getElementById("preview-message");
+  var docTitle = document.getElementById("doc-title");
+  var fileIO = globalThis.mdviewFileIO;
   var renderTimer = 0;
   var renderGeneration = 0;
 
@@ -50,6 +56,37 @@
     renderToken(++renderGeneration);
   }
 
+  function hideErrorBanner() {
+    errorBanner.textContent = "";
+    errorBanner.hidden = true;
+  }
+
+  function hidePreviewMessage() {
+    previewMessage.textContent = "";
+    previewMessage.hidden = true;
+  }
+
+  function clearFileStatus() {
+    hideErrorBanner();
+    hidePreviewMessage();
+  }
+
+  function showErrorBanner(message) {
+    errorBanner.textContent = message;
+    errorBanner.hidden = false;
+  }
+
+  function showPreviewMessage(message) {
+    previewMessage.textContent = message;
+    previewMessage.hidden = false;
+  }
+
+  function updateDocumentTitle(filename) {
+    docTitle.textContent = filename;
+    document.title = filename + " — mdview";
+    globalThis.__mdviewDocumentTitle = filename;
+  }
+
   function scheduleRender() {
     var token = ++renderGeneration;
     if (renderTimer) {
@@ -61,8 +98,48 @@
     }, 80);
   }
 
-  if (!input || !preview || !toggle || typeof globalThis.renderMarkdown !== "function") {
+  if (
+    !input ||
+    !preview ||
+    !toggle ||
+    !mdTheme ||
+    !hlTheme ||
+    !fileInput ||
+    !dropZone ||
+    !errorBanner ||
+    !previewMessage ||
+    !docTitle ||
+    typeof globalThis.renderMarkdown !== "function" ||
+    !fileIO ||
+    typeof fileIO.createFileLoader !== "function" ||
+    typeof fileIO.messageFor !== "function"
+  ) {
     return;
+  }
+
+  var fileLoader = fileIO.createFileLoader({
+    onSuccess: function (payload) {
+      input.value = payload.text;
+      renderNow();
+      clearFileStatus();
+      updateDocumentTitle(payload.filename);
+    },
+    onError: function (reason, detail) {
+      var message = fileIO.messageFor(reason, detail);
+      if (reason === "too-large") {
+        showErrorBanner(message);
+        hidePreviewMessage();
+        return;
+      }
+      hideErrorBanner();
+      showPreviewMessage(message);
+    }
+  });
+
+  function loadFirstFile(files) {
+    if (files && files[0]) {
+      fileLoader.load(files[0]);
+    }
   }
 
   // initial theme: saved preference, else OS preference
@@ -77,6 +154,38 @@
     applyTheme(currentTheme() === "dark" ? "light" : "dark");
   }, { signal: controller.signal });
 
-  input.addEventListener("input", scheduleRender, { signal: controller.signal });
+  fileInput.addEventListener("change", function () {
+    loadFirstFile(fileInput.files);
+    fileInput.value = "";
+  }, { signal: controller.signal });
+
+  dropZone.addEventListener("dragenter", function () {
+    dropZone.classList.add("dragover");
+  }, { signal: controller.signal });
+
+  dropZone.addEventListener("dragover", function (event) {
+    event.preventDefault();
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = "copy";
+    }
+    dropZone.classList.add("dragover");
+  }, { signal: controller.signal });
+
+  dropZone.addEventListener("dragleave", function (event) {
+    if (!event.relatedTarget || !dropZone.contains(event.relatedTarget)) {
+      dropZone.classList.remove("dragover");
+    }
+  }, { signal: controller.signal });
+
+  dropZone.addEventListener("drop", function (event) {
+    event.preventDefault();
+    dropZone.classList.remove("dragover");
+    loadFirstFile(event.dataTransfer && event.dataTransfer.files);
+  }, { signal: controller.signal });
+
+  input.addEventListener("input", function () {
+    clearFileStatus();
+    scheduleRender();
+  }, { signal: controller.signal });
   renderNow();
 })();

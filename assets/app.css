@@ -70,7 +70,20 @@ header.toolbar .spacer { flex: 1 1 auto; }
 
 header.toolbar .hint { color: var(--muted); font-size: 12px; }
 
-button.toggle {
+.file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+button.toggle,
+.file-button {
   appearance: none;
   border: 1px solid var(--border);
   background: var(--bg);
@@ -83,13 +96,56 @@ button.toggle {
   align-items: center;
   gap: 6px;
 }
-button.toggle:hover { border-color: var(--accent); color: var(--accent); }
+button.toggle:hover,
+.file-button:hover,
+.file-input:focus-visible + .file-button {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+:root .error-banner {
+  flex: 0 0 auto;
+  padding: 10px 16px;
+  color: #82071e;
+  background: #ffebe9;
+  border-bottom: 1px solid #ff8182;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+:root[data-theme="dark"] .error-banner {
+  color: #ffd8d3;
+  background: #3d1619;
+  border-bottom-color: #f85149;
+}
+
+.error-banner[hidden] { display: none; }
 
 main.split {
   flex: 1 1 auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
   min-height: 0;
+}
+
+:root .drop-zone {
+  outline: 0 solid transparent;
+  outline-offset: -4px;
+  transition: outline-color 120ms ease, background-color 120ms ease;
+}
+
+:root .drop-zone.dragover {
+  background: var(--bg-elev);
+  outline: 2px solid var(--accent);
+}
+
+:root[data-theme="dark"] .drop-zone {
+  outline-color: transparent;
+}
+
+:root[data-theme="dark"] .drop-zone.dragover {
+  background: var(--bg-elev);
+  outline-color: var(--accent);
 }
 
 .pane { min-height: 0; display: flex; flex-direction: column; }
@@ -127,6 +183,21 @@ textarea#input {
   background: var(--bg);
 }
 
+.preview-message {
+  max-width: 860px;
+  margin: 0 auto 16px;
+  padding: 10px 12px;
+  color: var(--muted);
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.preview-message[hidden] { display: none; }
+
+.print-title { display: none; }
+
 /* github-markdown-css targets .markdown-body; keep it readable inside our pane. */
 .markdown-body {
   background: transparent !important;
@@ -137,4 +208,31 @@ textarea#input {
 @media (max-width: 720px) {
   main.split { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
   .pane.editor { border-right: 0; border-bottom: 1px solid var(--border); }
+}
+
+@media print {
+  header.toolbar,
+  .error-banner,
+  .pane.editor,
+  .pane .pane-label,
+  .preview-message[hidden] {
+    display: none;
+  }
+
+  .print-title {
+    display: block;
+    margin: 0 0 16px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  main.split {
+    display: block;
+  }
+
+  .preview-scroll {
+    padding: 0;
+    overflow: visible;
+  }
 }
